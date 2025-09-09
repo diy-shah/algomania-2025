@@ -1,23 +1,24 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-
+import { useRouter } from "next/navigation"
 export default function Teampage() {
+const router = useRouter();
   return (
     <div className="flex min-h-screen bg-gray-950 text-gray-100">
       {/* Sidebar */}
       <aside className="w-64 bg-gray-900 p-6 flex flex-col border-r border-gray-800">
         <h2 className="text-xl font-bold mb-8">MyApp</h2>
         <nav className="flex flex-col gap-4">
-          <Button variant="ghost" className="justify-start" onClick={() => {
+          <Button variant="ghost" className="justify-start"  onClick={() => {
             // Navigate to dashboard
-            window.location.href = "/dashboard"
+          router.push("/dashboard");
           }}>
             📊 Dashboard
           </Button>
-          <Button variant="ghost" className="justify-start" onClick={() => {
+          <Button variant="ghost" className="justify-start"  onClick={() => {
             // Navigate to dashboard
-            window.location.href = "/team"
+            router.push("/team");
           }}>
             👥 Team
           </Button>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, FormEvent } from "react"
 import { useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -15,17 +15,21 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff } from "lucide-react"
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
-  const [showPassword, setShowPassword] = useState(false)
+interface LoginFormProps extends React.ComponentProps<"div"> {}
+
+export function LoginForm({ className, ...props }: LoginFormProps) {
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [role, setRole] = useState<"Team" | "admin">("Team")
   const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Add login validation here 
-    router.push("/dashboard") // redirect to dashboard
+    // TODO: Add login validation here
+    if (role === "Team") {
+      router.push("/dashboard")
+    } else {
+      router.push("/admin")
+    }
   }
 
   return (
@@ -34,7 +38,7 @@ export function LoginForm({
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
           <CardDescription>
-            Enter your team name to login to your account
+            Enter your team name and select your role to login
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -77,7 +81,23 @@ export function LoginForm({
                 </div>
               </div>
 
-              {/* Submit */}
+              {/* Role Selection using native select */}
+              <div className="grid gap-3">
+                <Label htmlFor="role">Role</Label>
+                <select
+                  id="role"
+                  value={role}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    setRole(e.target.value as "Team" | "admin")
+                  }
+                  className="bg-white-800 text-black p-2 rounded"
+                >
+                  <option value="Team">Team</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+
+              {/* Submit Button */}
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full h-12 text-lg">
                   Login

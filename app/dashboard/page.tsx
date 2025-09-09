@@ -1,8 +1,9 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-
+import { useRouter } from "next/navigation"
 export default function DashboardPage() {
+  const router = useRouter();
   return (
     <div className="flex min-h-screen bg-gray-950 text-gray-100">
       {/* Sidebar */}
@@ -11,13 +12,13 @@ export default function DashboardPage() {
         <nav className="flex flex-col gap-4">
           <Button variant="ghost" className="justify-start"  onClick={() => {
             // Navigate to dashboard
-            window.location.href = "/dashboard"
+          router.push("/dashboard");
           }}>
             📊 Dashboard
           </Button>
           <Button variant="ghost" className="justify-start"  onClick={() => {
             // Navigate to dashboard
-            window.location.href = "/team"
+            router.push("/team");
           }}>
             👥 Team
           </Button>
