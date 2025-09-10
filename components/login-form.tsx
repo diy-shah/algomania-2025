@@ -68,9 +68,7 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
       <Card>
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
-            Enter your team name and select your role to login
-          </CardDescription>
+
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>

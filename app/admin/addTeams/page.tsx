@@ -1,13 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 
 export default function AddTeamPage() {
-  const router = useRouter();
+    const router = useRouter()
+    const [token, setToken] = useState<string | null>(null);
+  
+    useEffect(() => {
+      const handleStorageChange = () => {
+        const newToken = localStorage.getItem("token");
+        setToken(newToken);
+        if (!newToken) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          router.push("/");
+        }
+      };
+  
+      window.addEventListener("storage", handleStorageChange);
+      handleStorageChange();
+  
+      return () => {
+        window.removeEventListener("storage", handleStorageChange);
+      };
+    }, []);
+  
 
   const [team, setTeam] = useState({
     teamLeader: "",
@@ -44,7 +65,7 @@ export default function AddTeamPage() {
 
   // Remove member (min 8)
   const removeMember = (index: number) => {
-    if (team.members.length > 8) {
+    if (team.members.length >= 8) {
       setTeam((prev) => {
         const updatedMembers = [...prev.members];
         updatedMembers.splice(index, 1);

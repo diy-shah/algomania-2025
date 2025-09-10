@@ -1,14 +1,16 @@
 "use client"
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import axios from "axios";
-import { Button } from "@/components/ui/button";
-import { Navbar } from "@/components/navbar";
+import { useEffect, useState } from "react"
+import axios from "axios"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
+import { Navbar } from "@/components/navbar"
 
-export default function AdminPage() {
-  const router = useRouter();
+export default function AllTeamsPage() {
+  const router = useRouter()
+  const [teams, setTeams] = useState<any[]>([])
+
+  
   const [token, setToken] = useState<string | null>(null);
-  const [teams, setTeams] = useState<any[]>([]);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -27,34 +29,29 @@ export default function AdminPage() {
     return () => {
       window.removeEventListener("storage", handleStorageChange);
     };
-  }, [router]);
+  }, []);
 
-  // Fetch teams
+
+
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-       const res = await axios.get("http://localhost:5000/admin/all_teams",{
+        const res = await axios.get("http://localhost:5000/admin/all_teams",{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           } 
-        }) 
-        
-        const sortedTeams = res.data
-          .sort((a: any, b: any) => b.totalScore - a.totalScore)
-          .slice(0, 5);
-        setTeams(sortedTeams);
+        }) // change URL if needed
+        setTeams(res.data)
       } catch (err) {
-        console.error("Error fetching teams:", err);
+        console.error("Error fetching teams:", err)
       }
-    };
+    }
+    fetchTeams()
+  }, [])
 
-    fetchTeams();
-  }, []);
-
-  // Navigate to Add Team page
-  const goToAddTeam = () => {
-    router.push("/admin/addTeams");
-  };
+  const handleViewTeam = (teamName: string) => {
+    router.push(`/admin/${teamName}`) // navigate using teamName
+  }
 
   return (
     <div>
@@ -64,20 +61,16 @@ export default function AdminPage() {
         <aside className="w-64 bg-gray-900 p-6 flex flex-col border-r border-gray-800">
           <h2 className="text-xl font-bold mb-8">MyApp Admin</h2>
           <nav className="flex flex-col gap-4">
-            <Button variant="ghost" className="justify-start text-blue-400">
+            <Button variant="ghost" className="justify-start" onClick={() => router.push("/admin")}>
               📊 Dashboard
             </Button>
-            <Button
-              variant="ghost"
-              className="justify-start"
-              onClick={() => router.push("/admin/allTeams")}
-            >
+            <Button variant="ghost" className="justify-start text-blue-400">
               👥 All Teams
             </Button>
             <Button
               variant="ghost"
               className="justify-start text-green-400"
-              onClick={goToAddTeam}
+              onClick={() => router.push("/admin/addTeams")}
             >
               ➕ Add Team
             </Button>
@@ -86,15 +79,14 @@ export default function AdminPage() {
 
         {/* Main Content */}
         <main className="flex-1 p-8">
-          {/* Header */}
           <header className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-bold">Dashboard</h1>
+            <h1 className="text-2xl font-bold">All Teams</h1>
           </header>
 
-          {/* Top Teams Table */}
+          {/* Teams Table */}
           <div className="bg-gray-900 rounded-xl shadow-md border border-gray-800">
-            <div className="px-6 py-4 border-b border-gray-800">
-              <h2 className="text-lg font-semibold">🏆 Top 5 Teams</h2>
+            <div className="px-6 py-4 border-b border-gray-800 flex justify-between items-center">
+              <h2 className="text-lg font-semibold">🏆 Registered Teams</h2>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
@@ -102,32 +94,36 @@ export default function AdminPage() {
                   <tr>
                     <th className="px-4 py-2 border-b border-gray-700 w-12">#</th>
                     <th className="px-4 py-2 border-b border-gray-700">Team Name</th>
-                    <th className="px-4 py-2 border-b border-gray-700 text-right">
-                      Score
-                    </th>
+                    <th className="px-4 py-2 border-b border-gray-700">Team Leader</th>
+                    <th className="px-4 py-2 border-b border-gray-700 text-right">Total Score</th>
+                    <th className="px-4 py-2 border-b border-gray-700 text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {teams.length > 0 ? (
                     teams.map((team, index) => (
                       <tr key={team._id} className="hover:bg-gray-800/50">
-                        <td className="px-4 py-2 border-b border-gray-800">
-                          {index + 1}
-                        </td>
-                        <td className="px-4 py-2 border-b border-gray-800">
-                          {team.teamName}
-                        </td>
-                        <td className="px-4 py-2 border-b border-gray-800 text-right">
+                        <td className="px-4 py-2 border-b border-gray-800">{index + 1}</td>
+                        <td className="px-4 py-2 border-b border-gray-800">{team.teamName}</td>
+                        <td className="px-4 py-2 border-b border-gray-800">{team.teamLeader}</td>
+                        <td className="px-4 py-2 border-b border-gray-800 text-right font-bold">
                           {team.totalScore}
+                        </td>
+                        <td className="px-4 py-2 border-b border-gray-800 text-center">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="text-black"
+                            onClick={() => handleViewTeam(team.teamName)}
+                          >
+                            View
+                          </Button>
                         </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td
-                        colSpan={3}
-                        className="px-4 py-6 text-center text-gray-400"
-                      >
+                      <td colSpan={5} className="px-4 py-6 text-center text-gray-400">
                         No teams found.
                       </td>
                     </tr>
@@ -139,5 +135,5 @@ export default function AdminPage() {
         </main>
       </div>
     </div>
-  );
+  )
 }
