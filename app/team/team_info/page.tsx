@@ -1,11 +1,39 @@
 "use client"
-
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+import { Navbar } from "@/components/navbar";
+
 export default function Teampage() {
-const router = useRouter();
+ const router = useRouter();
+
+  const [token, setToken] = useState<string | null>(null);
+
+    useEffect(() => {
+     
+        const handleStorageChange = () => {
+            const newToken = localStorage.getItem('token');
+            setToken(newToken);
+            if (!newToken) {
+                localStorage.removeItem("token");
+                localStorage.removeItem("role");
+                router.push('/');
+            }
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        handleStorageChange();
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
+
   return (
+    <div>
+      <Navbar/>
     <div className="flex min-h-screen bg-gray-950 text-gray-100">
+      
       {/* Sidebar */}
       <aside className="w-64 bg-gray-900 p-6 flex flex-col border-r border-gray-800">
         <h2 className="text-xl font-bold mb-8">MyApp</h2>
@@ -84,6 +112,6 @@ const router = useRouter();
           </div>
         </div>
       </main>
-    </div>
+    </div> </div>
   )
 }
