@@ -8,39 +8,37 @@ import { Navbar } from "@/components/navbar"
 export default function AllTeamsPage() {
   const router = useRouter()
   const [teams, setTeams] = useState<any[]>([])
+  const [loading, setLoading] = useState<string | null>(null)
 
-  
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null)
 
   useEffect(() => {
     const handleStorageChange = () => {
-      const newToken = localStorage.getItem("token");
-      setToken(newToken);
+      const newToken = localStorage.getItem("token")
+      setToken(newToken)
       if (!newToken) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("role");
-        router.push("/");
+        localStorage.removeItem("token")
+        localStorage.removeItem("role")
+        router.push("/")
       }
-    };
+    }
 
-    window.addEventListener("storage", handleStorageChange);
-    handleStorageChange();
+    window.addEventListener("storage", handleStorageChange)
+    handleStorageChange()
 
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
-
-
+      window.removeEventListener("storage", handleStorageChange)
+    }
+  }, [router])
 
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/admin/all_teams",{
+        const res = await axios.get("http://localhost:5000/admin/all_teams", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
-          } 
-        }) // change URL if needed
+          },
+        })
         setTeams(res.data)
       } catch (err) {
         console.error("Error fetching teams:", err)
@@ -50,7 +48,35 @@ export default function AllTeamsPage() {
   }, [])
 
   const handleViewTeam = (teamName: string) => {
-    router.push(`/admin/${teamName}`) // navigate using teamName
+    router.push(`/admin/${teamName}`)
+  }
+
+  const handleUpdateScores = async (teamName: string) => {
+    try {
+      setLoading(teamName)
+      await axios.get(
+        `http://localhost:5000/admin/update/score/${teamName}`,
+      
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      alert(`✅ Scores updated for ${teamName}`)
+      // Refresh teams after update
+      const res = await axios.get("http://localhost:5000/admin/all_teams", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      setTeams(res.data)
+    } catch (err) {
+      console.error("Error updating scores:", err)
+      alert("❌ Failed to update scores")
+    } finally {
+      setLoading(null)
+    }
   }
 
   return (
@@ -96,7 +122,7 @@ export default function AllTeamsPage() {
                     <th className="px-4 py-2 border-b border-gray-700">Team Name</th>
                     <th className="px-4 py-2 border-b border-gray-700">Team Leader</th>
                     <th className="px-4 py-2 border-b border-gray-700 text-right">Total Score</th>
-                    <th className="px-4 py-2 border-b border-gray-700 text-center">Action</th>
+                    <th className="px-4 py-2 border-b border-gray-700 text-center">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -109,7 +135,7 @@ export default function AllTeamsPage() {
                         <td className="px-4 py-2 border-b border-gray-800 text-right font-bold">
                           {team.totalScore}
                         </td>
-                        <td className="px-4 py-2 border-b border-gray-800 text-center">
+                        <td className="px-4 py-2 border-b border-gray-800 text-center flex gap-2 justify-center">
                           <Button
                             variant="outline"
                             size="sm"
@@ -117,6 +143,14 @@ export default function AllTeamsPage() {
                             onClick={() => handleViewTeam(team.teamName)}
                           >
                             View
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            size="sm"
+                            disabled={loading === team.teamName}
+                            onClick={() => handleUpdateScores(team.teamName)}
+                          >
+                            {loading === team.teamName ? "Updating..." : "Update"}
                           </Button>
                         </td>
                       </tr>

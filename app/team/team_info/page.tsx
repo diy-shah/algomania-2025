@@ -29,8 +29,8 @@ export default function TeamDashboard() {
     fetchTeam();
   }, [router]);
 
-  const handleMemberClick = (member: string) => {
-    router.push(`/team/${member}`);
+  const handleMemberClick = (teamName: string,userName: string) => {
+    router.push(`/team/${teamName}/${userName}`);
   };
 
   if (!team) return <div>Loading...</div>;
@@ -81,7 +81,7 @@ export default function TeamDashboard() {
                     <td className="px-4 py-2 border-b border-gray-800 text-center">
                       <button
                         className="px-2 py-1 bg-blue-600 rounded hover:bg-blue-700"
-                        onClick={() => handleMemberClick(member.userName)}
+                        onClick={() => handleMemberClick(team.teamName,member.userName)}
                       >
                         View
                       </button>

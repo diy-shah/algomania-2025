@@ -72,7 +72,7 @@ export default function AdminTeamPage() {
                   <tr
                     key={member._id}
                     className="hover:bg-gray-800/50 cursor-pointer"
-                    onClick={() => router.push(`/admin/${member.userName}`)}
+                    onClick={() => router.push(`/admin/${teamName}/${member.userName}`)}
                   >
                     <td className="px-4 py-2 border-b border-gray-800">{index + 1}</td>
                     <td className="px-4 py-2 border-b border-gray-800">{member.userName}</td>
