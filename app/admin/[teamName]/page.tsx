@@ -5,11 +5,23 @@ import axios from "axios";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 
+type Member = {
+  _id: string;
+  userName: string;
+  score: number;
+};
+
+type Team = {
+  teamName: string;
+  members: Member[];
+  totalScore: number;
+};
+
 export default function AdminTeamPage() {
   const router = useRouter();
   const params = useParams();
   const teamName = params.teamName;
-  const [team, setTeam] = useState(null);
+  const [team, setTeam] = useState<Team | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token");

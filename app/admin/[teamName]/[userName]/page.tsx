@@ -6,12 +6,30 @@ import axios from "axios";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 
+// ✅ Define types
+interface Submission {
+  title: string;
+  difficulty: "Easy" | "Medium" | "Hard";
+  timestamp: string;
+  url: string;
+}
+
+interface Member {
+  score: number;
+  submissions: Submission[];
+}
+
+interface Params {
+  teamName: string;
+  userName: string;
+}
+
 export default function MemberProfilePage() {
   const router = useRouter();
-  const params = useParams();
+  const params = useParams(); // ✅ cast params
   const { teamName, userName } = params;
 
-  const [memberData, setMemberData] = useState(null);
+  const [memberData, setMemberData] = useState<Member | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -33,11 +51,11 @@ export default function MemberProfilePage() {
     setLoading(true);
     setError("");
     try {
-      const res = await axios.get(
+      const res = await axios.get<{ member: Member }>(
         `http://localhost:5000/admin/${teamName}/member/${userName}`,
         {
           headers: { Authorization: `Bearer ${token}` },
-          params: { startDate, endDate }, // pass as query params
+          params: { startDate, endDate },
         }
       );
       setMemberData(res.data.member);
@@ -57,49 +75,27 @@ export default function MemberProfilePage() {
         <aside className="w-64 bg-gray-900 p-6 flex flex-col border-r border-gray-800">
           <h2 className="text-xl font-bold mb-8">MyApp Admin</h2>
           <nav className="flex flex-col gap-4">
-            <Button
-              variant="ghost"
-              className="justify-start"
-              onClick={() => router.push("/admin")}
-            >
+            <Button variant="ghost" className="justify-start" onClick={() => router.push("/admin")}>
               📊 Dashboard
             </Button>
-            <Button
-              variant="ghost"
-              className="justify-start"
-              onClick={() => router.push("/admin/allTeams")}
-            >
+            <Button variant="ghost" className="justify-start" onClick={() => router.push("/admin/allTeams")}>
               👥 All Teams
             </Button>
-            <Button
-              variant="ghost"
-              className="justify-start"
-              onClick={() => router.push("/admin/addTeams")}
-            >
+            <Button variant="ghost" className="justify-start" onClick={() => router.push("/admin/addTeams")}>
               ➕ Add Team
             </Button>
-            <Button
-              variant="ghost"
-              className="justify-start text-green-400"
-              onClick={() => router.push(`/admin/${teamName}`)}
-            >
+            <Button variant="ghost" className="justify-start text-green-400" onClick={() => router.push(`/admin/${teamName}`)}>
               🔙 Back to Team
             </Button>
-             <Button
-                          variant="ghost"
-                          className="justify-start text-green-400"
-                          onClick={() => router.push("/admin/addnotes")}
-                        >
-                          ➕ Add Notes
-                        </Button>
+            <Button variant="ghost" className="justify-start text-green-400" onClick={() => router.push("/admin/addnotes")}>
+              ➕ Add Notes
+            </Button>
           </nav>
         </aside>
 
         {/* Main Content */}
         <main className="flex-1 p-8">
-          <h1 className="text-2xl font-bold mb-4">
-            {userName} - LeetCode Profile
-          </h1>
+          <h1 className="text-2xl font-bold mb-4">{userName} - LeetCode Profile</h1>
 
           {/* Date Range Selection */}
           <div className="flex gap-4 mb-6">
@@ -131,8 +127,7 @@ export default function MemberProfilePage() {
           {!loading && memberData && (
             <>
               <p className="mb-6 text-gray-300">
-                Total Score:{" "}
-                <span className="font-bold">{memberData.score}</span>
+                Total Score: <span className="font-bold">{memberData.score}</span>
               </p>
 
               <div className="bg-gray-900 rounded-xl shadow-md border border-gray-800 overflow-x-auto">
@@ -152,14 +147,13 @@ export default function MemberProfilePage() {
                         <td className="px-4 py-2 border-b border-gray-800">{index + 1}</td>
                         <td className="px-4 py-2 border-b border-gray-800">{sub.title}</td>
                         <td
-                          className={`px-4 py-2 border-b border-gray-800 font-bold 
-                            ${
-                              sub.difficulty === "Easy"
-                                ? "text-green-400"
-                                : sub.difficulty === "Medium"
-                                ? "text-yellow-400"
-                                : "text-red-500"
-                            }`}
+                          className={`px-4 py-2 border-b border-gray-800 font-bold ${
+                            sub.difficulty === "Easy"
+                              ? "text-green-400"
+                              : sub.difficulty === "Medium"
+                              ? "text-yellow-400"
+                              : "text-red-500"
+                          }`}
                         >
                           {sub.difficulty}
                         </td>
