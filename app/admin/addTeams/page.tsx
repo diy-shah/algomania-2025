@@ -121,6 +121,13 @@ export default function AddTeamPage() {
             >
               ➕ Add Team
             </Button>
+             <Button
+              variant="ghost"
+              className="justify-start text-green-400"
+              onClick={() => router.push("/admin/addnotes")}
+            >
+              ➕ Add Notes
+            </Button>
           </nav>
         </aside>
 

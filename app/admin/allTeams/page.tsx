@@ -9,8 +9,11 @@ export default function AllTeamsPage() {
   const router = useRouter()
   const [teams, setTeams] = useState<any[]>([])
   const [loading, setLoading] = useState<string | null>(null)
-
   const [token, setToken] = useState<string | null>(null)
+
+  // New state for date range
+  const [startDate, setStartDate] = useState<string>("")
+  const [endDate, setEndDate] = useState<string>("")
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -52,11 +55,15 @@ export default function AllTeamsPage() {
   }
 
   const handleUpdateScores = async (teamName: string) => {
+    if (!startDate || !endDate) {
+      alert("⚠️ Please select both start and end dates")
+      return
+    }
+
     try {
       setLoading(teamName)
       await axios.get(
-        `http://localhost:5000/admin/update/score/${teamName}`,
-      
+        `http://localhost:5000/admin/update/score/${teamName}?startDate=${startDate}&endDate=${endDate}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -64,6 +71,7 @@ export default function AllTeamsPage() {
         }
       )
       alert(`✅ Scores updated for ${teamName}`)
+
       // Refresh teams after update
       const res = await axios.get("http://localhost:5000/admin/all_teams", {
         headers: {
@@ -100,6 +108,13 @@ export default function AllTeamsPage() {
             >
               ➕ Add Team
             </Button>
+            <Button
+              variant="ghost"
+              className="justify-start text-green-400"
+              onClick={() => router.push("/admin/addnotes")}
+            >
+              ➕ Add Notes
+            </Button>
           </nav>
         </aside>
 
@@ -108,6 +123,28 @@ export default function AllTeamsPage() {
           <header className="flex items-center justify-between mb-8">
             <h1 className="text-2xl font-bold">All Teams</h1>
           </header>
+
+          {/* Date Range Controls */}
+          <div className="mb-6 flex gap-4">
+            <div>
+              <label className="block mb-1 text-sm text-gray-400">Start Date</label>
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="bg-gray-800 text-gray-100 rounded-lg px-3 py-2 border border-gray-700"
+              />
+            </div>
+            <div>
+              <label className="block mb-1 text-sm text-gray-400">End Date</label>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="bg-gray-800 text-gray-100 rounded-lg px-3 py-2 border border-gray-700"
+              />
+            </div>
+          </div>
 
           {/* Teams Table */}
           <div className="bg-gray-900 rounded-xl shadow-md border border-gray-800">

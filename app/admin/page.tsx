@@ -64,7 +64,7 @@ export default function AdminPage() {
         <aside className="w-64 bg-gray-900 p-6 flex flex-col border-r border-gray-800">
           <h2 className="text-xl font-bold mb-8">MyApp Admin</h2>
           <nav className="flex flex-col gap-4">
-            <Button variant="ghost" className="justify-start text-blue-400">
+            <Button variant="ghost" className="justify-start text-blue-400"    onClick={() => router.push("/admin")}>
               📊 Dashboard
             </Button>
             <Button
@@ -80,6 +80,14 @@ export default function AdminPage() {
               onClick={goToAddTeam}
             >
               ➕ Add Team
+            </Button>
+
+             <Button
+              variant="ghost"
+              className="justify-start text-green-400"
+              onClick={() => router.push("/admin/addnotes")}
+            >
+              ➕ Add Notes
             </Button>
           </nav>
         </aside>
