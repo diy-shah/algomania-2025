@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "54.204.245.101:5000";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://54.204.245.101:5000";
 export default function AddTeamPage() {
     const router = useRouter()
     const [token, setToken] = useState<string | null>(null);

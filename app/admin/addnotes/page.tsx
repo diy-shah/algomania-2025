@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "54.204.245.101:5000";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://54.204.245.101:5000";
 interface Notice {
   _id: string;
   title: string;
