@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://backend:5000";
 
 export default function TeamDashboard() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function TeamDashboard() {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/team/topteams", {
+        const res = await axios.get(`${apiUrl}/team/topteams`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         const sortedTeams = res.data
@@ -49,7 +50,7 @@ export default function TeamDashboard() {
 
     const fetchNotices = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/team/view/notices", {
+        const res = await axios.get(`${apiUrl}/team/view/notices`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         setNotices(res.data.notices);

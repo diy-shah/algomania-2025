@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
-
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://backend:5000";
 export default function AddTeamPage() {
     const router = useRouter()
     const [token, setToken] = useState<string | null>(null);
@@ -79,7 +79,7 @@ export default function AddTeamPage() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:5000/admin/add_new/team",
+        `${apiUrl}/admin/add_new/team`,
         team,
         {
           headers: {

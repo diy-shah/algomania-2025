@@ -6,6 +6,9 @@ import axios from "axios";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 
+
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://backend:5000";
+
 // ✅ Define types
 interface Submission {
   title: string;
@@ -52,7 +55,7 @@ export default function MemberProfilePage() {
     setError("");
     try {
       const res = await axios.get<{ member: Member }>(
-        `http://localhost:5000/admin/${teamName}/member/${userName}`,
+        `${apiUrl}/admin/${teamName}/member/${userName}`,
         {
           headers: { Authorization: `Bearer ${token}` },
           params: { startDate, endDate },

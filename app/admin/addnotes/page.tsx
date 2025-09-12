@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://backend:5000";
 interface Notice {
   _id: string;
   title: string;
@@ -27,7 +28,7 @@ export default function AdminNoticesPage() {
   const fetchNotices = async () => {
     try {
       const res = await axios.get<{ notices: Notice[] }>(
-        "http://localhost:5000/admin/view/notices",
+        `${apiUrl}/admin/view/notices`,
         {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
@@ -48,7 +49,7 @@ export default function AdminNoticesPage() {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "http://localhost:5000/admin/add_notice",
+        `${apiUrl}/admin/add_notice`,
         { title, message, startDate, endDate },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -69,7 +70,7 @@ export default function AdminNoticesPage() {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:5000/admin/delete_notice/${id}`, {
+      await axios.delete(`${apiUrl}/admin/delete_notice/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       fetchNotices();

@@ -10,7 +10,7 @@ type Member = {
   userName: string;
   score: number;
 };
-
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://backend:5000";
 type Team = {
   teamName: string;
   members: Member[];
@@ -32,7 +32,7 @@ export default function AdminTeamPage() {
 
     const fetchTeam = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/admin/team/${teamName}`, {
+        const res = await axios.get(`${apiUrl}/admin/team/${teamName}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setTeam(res.data);

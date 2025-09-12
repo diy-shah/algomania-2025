@@ -4,7 +4,7 @@ import axios from "axios"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/navbar"
-
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://backend:5000";
 export default function AllTeamsPage() {
   const router = useRouter()
   const [teams, setTeams] = useState<any[]>([])
@@ -37,7 +37,7 @@ export default function AllTeamsPage() {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/admin/all_teams", {
+        const res = await axios.get(`${apiUrl}/admin/all_teams`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -63,7 +63,7 @@ export default function AllTeamsPage() {
     try {
       setLoading(teamName)
       await axios.get(
-        `http://localhost:5000/admin/update/score/${teamName}?startDate=${startDate}&endDate=${endDate}`,
+        `${apiUrl}/admin/update/score/${teamName}?startDate=${startDate}&endDate=${endDate}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -73,7 +73,7 @@ export default function AllTeamsPage() {
       alert(`✅ Scores updated for ${teamName}`)
 
       // Refresh teams after update
-      const res = await axios.get("http://localhost:5000/admin/all_teams", {
+      const res = await axios.get(`${apiUrl}/admin/all_teams`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

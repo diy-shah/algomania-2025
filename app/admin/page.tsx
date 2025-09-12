@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
-
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://backend:5000";
 export default function AdminPage() {
   const router = useRouter();
   const [token, setToken] = useState<string | null>(null);
@@ -33,7 +33,7 @@ export default function AdminPage() {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-       const res = await axios.get("http://localhost:5000/admin/all_teams",{
+       const res = await axios.get(`${apiUrl}/admin/all_teams`,{
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           } 
