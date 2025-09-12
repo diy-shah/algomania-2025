@@ -17,7 +17,7 @@ import { Eye, EyeOff } from "lucide-react"
 import axios from "axios"
 
 interface LoginFormProps extends React.ComponentProps<"div"> {}
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "54.204.245.101:5000";
 export function LoginForm({ className, ...props }: LoginFormProps) {
   const [teamName, setTeamName] = useState("")
   const [password, setPassword] = useState("")
