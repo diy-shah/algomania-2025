@@ -17,7 +17,7 @@ import { Eye, EyeOff } from "lucide-react"
 import axios from "axios"
 
 interface LoginFormProps extends React.ComponentProps<"div"> {}
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://backend:5000";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 export function LoginForm({ className, ...props }: LoginFormProps) {
   const [teamName, setTeamName] = useState("")
   const [password, setPassword] = useState("")
@@ -36,9 +36,9 @@ export function LoginForm({ className, ...props }: LoginFormProps) {
     try {
       
       const response = await axios.post(`${apiUrl}/login`, {
-        name: teamName,   // backend expects "name"
+        name: teamName,   // localhost expects "name"
         password,
-        role: role === "Team" ? "user" : "admin", // backend uses "user" not "Team"
+        role: role === "Team" ? "user" : "admin", // localhost uses "user" not "Team"
       })
 
       const { token, role: returnedRole } = response.data

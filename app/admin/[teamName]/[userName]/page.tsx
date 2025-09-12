@@ -7,7 +7,7 @@ import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://backend:5000";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 // ✅ Define types
 interface Submission {

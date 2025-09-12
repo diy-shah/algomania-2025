@@ -10,7 +10,7 @@ type Member = {
   userName: string;
   score: number;
 };
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://backend:5000";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 type Team = {
   teamName: string;
   members: Member[];

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://backend:5000";
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export default function TeamDashboard() {
   const router = useRouter();
