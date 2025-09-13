@@ -4,16 +4,18 @@ import axios from "axios"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Navbar } from "@/components/navbar"
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://54.204.245.101:5000";
+
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://54.204.245.101:5000"
+
 export default function AllTeamsPage() {
   const router = useRouter()
   const [teams, setTeams] = useState<any[]>([])
   const [loading, setLoading] = useState<string | null>(null)
   const [token, setToken] = useState<string | null>(null)
 
-  // New state for date range
   const [startDate, setStartDate] = useState<string>("")
   const [endDate, setEndDate] = useState<string>("")
+  const [problemIds, setProblemIds] = useState<string>("")
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -55,33 +57,53 @@ export default function AllTeamsPage() {
   }
 
   const handleUpdateScores = async (teamName: string) => {
-    if (!startDate || !endDate) {
-      alert("⚠️ Please select both start and end dates")
+    if (!startDate || !endDate || !problemIds) {
+      alert("⚠️ Please fill Start Date, End Date, and Problem IDs")
       return
     }
 
     try {
       setLoading(teamName)
-      await axios.get(
-        `${apiUrl}/admin/update/score/${teamName}?startDate=${startDate}&endDate=${endDate}`,
+      
+      // Convert comma-separated string to array of NUMBERS
+      const problemsArray = problemIds.split(',')
+        .map(id => id.trim())
+        .filter(id => id !== '')
+        .map(id => Number(id)) // Convert to numbers
+        .filter(id => !isNaN(id)); // Remove any non-numbers
+
+      console.log("Sending problems array (numbers):", problemsArray);
+
+      // Use the contest endpoint
+      const response = await axios.post(
+        `${apiUrl}/admin/contest/${teamName}/update-score`,
+        { 
+          startDate, 
+          endDate, 
+          problems: problemsArray 
+        },
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         }
       )
+
+      console.log("Response:", response.data);
+
       alert(`✅ Scores updated for ${teamName}`)
 
-      // Refresh teams after update
+      // Refresh after update
       const res = await axios.get(`${apiUrl}/admin/all_teams`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
       setTeams(res.data)
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error updating scores:", err)
-      alert("❌ Failed to update scores")
+      console.error("Error response:", err.response?.data);
+      alert("❌ Failed to update scores: " + (err.response?.data?.message || err.message))
     } finally {
       setLoading(null)
     }
@@ -91,7 +113,6 @@ export default function AllTeamsPage() {
     <div>
       <Navbar />
       <div className="flex min-h-screen bg-gray-950 text-gray-100">
-        {/* Sidebar */}
         <aside className="w-64 bg-gray-900 p-6 flex flex-col border-r border-gray-800">
           <h2 className="text-xl font-bold mb-8">MyApp Admin</h2>
           <nav className="flex flex-col gap-4">
@@ -118,13 +139,11 @@ export default function AllTeamsPage() {
           </nav>
         </aside>
 
-        {/* Main Content */}
         <main className="flex-1 p-8">
           <header className="flex items-center justify-between mb-8">
             <h1 className="text-2xl font-bold">All Teams</h1>
           </header>
 
-          {/* Date Range Controls */}
           <div className="mb-6 flex gap-4">
             <div>
               <label className="block mb-1 text-sm text-gray-400">Start Date</label>
@@ -143,6 +162,17 @@ export default function AllTeamsPage() {
                 onChange={(e) => setEndDate(e.target.value)}
                 className="bg-gray-800 text-gray-100 rounded-lg px-3 py-2 border border-gray-700"
               />
+            </div>
+            <div>
+              <label className="block mb-1 text-sm text-gray-400">Problem IDs (comma-separated numbers)</label>
+              <input
+                type="text"
+                value={problemIds}
+                onChange={(e) => setProblemIds(e.target.value)}
+                placeholder="e.g., 1, 2, 3"
+                className="bg-gray-800 text-gray-100 rounded-lg px-3 py-2 border border-gray-700 w-64"
+              />
+              <p className="text-xs text-gray-500 mt-1">Enter LeetCode problem numbers (e.g., 1, 2, 3)</p>
             </div>
           </div>
 
