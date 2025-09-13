@@ -39,10 +39,7 @@ export default function TeamDashboard() {
         const res = await axios.get(`${apiUrl}/team/topteams`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
-        const sortedTeams = res.data
-          .sort((a: any, b: any) => b.totalScore - a.totalScore)
-          .slice(0, 5);
-        setTeams(sortedTeams);
+        setTeams(res.data.slice(0, 5)); // top 5 teams
       } catch (err) {
         console.error("Error fetching teams:", err);
       }
@@ -63,10 +60,7 @@ export default function TeamDashboard() {
     fetchNotices();
   }, []);
 
-  // Navigate to team detail page
-  const viewTeam = (teamName: string) => {
-    router.push(`/team/${teamName}`);
-  };
+ 
 
   return (
     <div>
@@ -140,7 +134,7 @@ export default function TeamDashboard() {
                 <tbody>
                   {teams.length > 0 ? (
                     teams.map((team, index) => (
-                      <tr key={team._id} className="hover:bg-gray-800/50 cursor-pointer" onClick={() => viewTeam(team.teamName)}>
+                      <tr key={team._id} className="hover:bg-gray-800/50 cursor-pointer" >
                         <td className="px-4 py-2 border-b border-gray-800">{index + 1}</td>
                         <td className="px-4 py-2 border-b border-gray-800">{team.teamName}</td>
                         <td className="px-4 py-2 border-b border-gray-800 text-right">{team.totalScore}</td>

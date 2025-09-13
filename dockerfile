@@ -15,11 +15,15 @@ RUN npm install --legacy-peer-deps
 # 5. Copy all project files
 COPY . .
 
-# 6. Build Next.js app
+# 6. Add build-time ARG and ENV (so NEXT_PUBLIC_ vars get baked in)
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
+# 7. Build Next.js app
 RUN npm run build
 
-# 7. Expose port 3000 for Next.js
+# 8. Expose port 3000 for Next.js
 EXPOSE 3000
 
-# 8. Start Next.js production server
+# 9. Start Next.js production server
 CMD ["npm", "start"]

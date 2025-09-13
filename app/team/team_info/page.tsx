@@ -18,7 +18,7 @@ export default function TeamDashboard() {
 
     const fetchTeam = async () => {
       try {
-        const res = await axios.get(`${apiUrl}/team/myteam`, {
+        const res = await axios.get(`${apiUrl}/team/myTeam`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         setTeam(res.data);
@@ -62,6 +62,7 @@ export default function TeamDashboard() {
         {/* Main */}
         <main className="flex-1 p-8">
           <h1 className="text-2xl font-bold mb-6">{team.teamName} Dashboard</h1>
+          <h1 className="text-2xl font-bold mb-6"> RANK {team.rank}</h1>
 
           <div className="bg-gray-900 rounded-xl shadow-md border border-gray-800 overflow-x-auto">
             <table className="w-full text-left border-collapse">
