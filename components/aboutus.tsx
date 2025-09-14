@@ -3,9 +3,12 @@
 export default function AboutUsPage() {
   return (
     <div className="rounded-2xl bg-[#1a1a1a]/80 backdrop-blur-md p-10 shadow-[0_0_25px_rgba(168,85,247,0.5)] border border-[#06b6d4]/40">
-      <h1 className="text-center text-4xl font-bold mb-6 bg-gradient-to-r from-[#a855f7] via-[#06b6d4] to-[#84cc16] bg-clip-text text-transparent">
+   
+   
+      <h1 className="text-center text-4xl mt-2 font-bold mb-6 bg-gradient-to-r from-[#a855f7] via-[#06b6d4] to-[#84cc16] bg-clip-text text-transparent">
         About Algomania
       </h1>
+      
 
       <p className="text-gray-300 text-lg leading-relaxed mb-6">
         Algomania is a month-long competitive coding event where teams battle 
@@ -30,7 +33,7 @@ export default function AboutUsPage() {
         </div>
         
         <div className="p-6 rounded-lg bg-[#0f0f0f]/60 border border-[#06b6d4]/40 shadow-[0_0_15px_rgba(6,182,212,0.4)]">
-          <h2 className="text-xl font-semibold text-[#06b6d4] mb-2">🌐 Community</h2>
+          <h2 className="text-md font-semibold text-[#06b6d4] mb-2">🌐Community</h2>
           <p className="text-gray-400 text-sm">
             A hub for programmers to learn, share knowledge, and compete globally.
           </p>
@@ -43,6 +46,8 @@ export default function AboutUsPage() {
           </p>
         </div>
       </div>
+  
+
     </div>
   )
 }
