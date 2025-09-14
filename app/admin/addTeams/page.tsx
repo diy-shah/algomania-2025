@@ -1,34 +1,37 @@
 "use client";
 
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
+import Sidebar from "@/components/side-navbar";
+import { UserPlus, Users, Trash2, PlusSquare, CheckCircle } from "lucide-react";
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://54.204.245.101:5000";
+
 export default function AddTeamPage() {
-    const router = useRouter()
-    const [token, setToken] = useState<string | null>(null);
-  
-    useEffect(() => {
-      const handleStorageChange = () => {
-        const newToken = localStorage.getItem("token");
-        setToken(newToken);
-        if (!newToken) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("role");
-          router.push("/");
-        }
-      };
-  
-      window.addEventListener("storage", handleStorageChange);
-      handleStorageChange();
-  
-      return () => {
-        window.removeEventListener("storage", handleStorageChange);
-      };
-    }, []);
-  
+  const router = useRouter();
+  const [token, setToken] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const newToken = localStorage.getItem("token");
+      setToken(newToken);
+      if (!newToken) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        router.push("/");
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    handleStorageChange();
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   const [team, setTeam] = useState({
     teamLeader: "",
@@ -38,13 +41,11 @@ export default function AddTeamPage() {
     members: Array(8).fill({ userName: "" }), // start with 8 empty members
   });
 
-  // Handle input changes for main fields
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setTeam((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle member username changes
   const handleMemberChange = (index: number, value: string) => {
     setTeam((prev) => {
       const updatedMembers = [...prev.members];
@@ -53,7 +54,6 @@ export default function AddTeamPage() {
     });
   };
 
-  // Add member (max 10)
   const addMember = () => {
     if (team.members.length < 10) {
       setTeam((prev) => ({
@@ -63,9 +63,8 @@ export default function AddTeamPage() {
     }
   };
 
-  // Remove member (min 8)
   const removeMember = (index: number) => {
-    if (team.members.length >= 8) {
+    if (team.members.length > 8) {
       setTeam((prev) => {
         const updatedMembers = [...prev.members];
         updatedMembers.splice(index, 1);
@@ -74,22 +73,14 @@ export default function AddTeamPage() {
     }
   };
 
-  // Submit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        `${apiUrl}/admin/add_new/team`,
-        team,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      await axios.post(`${apiUrl}/admin/add_new/team`, team, {
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      });
       alert("✅ Team added successfully!");
-      console.log(res.data);
-      router.push("/admin"); // redirect back after adding team
+      router.push("/admin");
     } catch (err) {
       console.error(err);
       alert("❌ Failed to add team");
@@ -97,55 +88,27 @@ export default function AddTeamPage() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen flex flex-col bg-gray-950 text-gray-100">
       <Navbar />
-      <div className="flex min-h-screen bg-gray-950 text-gray-100">
-        {/* Sidebar */}
-        <aside className="w-64 bg-gray-900 p-6 flex flex-col border-r border-gray-800">
-          <h2 className="text-xl font-bold mb-8">MyApp Admin</h2>
-          <nav className="flex flex-col gap-4">
-            <Button
-              variant="ghost"
-              className="justify-start"
-              onClick={() => router.push("/admin")}
-            >
-              📊 Dashboard
-            </Button>
-            <Button variant="ghost" className="justify-start" onClick={() => router.push("/admin/allTeams")}>
-              👥 All Teams
-            </Button>
-            <Button
-              variant="ghost"
-              className="justify-start text-green-400"
-              onClick={() => router.push("/admin/addTeams")}
-            >
-              ➕ Add Team
-            </Button>
-             <Button
-              variant="ghost"
-              className="justify-start text-green-400"
-              onClick={() => router.push("/admin/addnotes")}
-            >
-              ➕ Add Notes
-            </Button>
-          </nav>
-        </aside>
+      <div className="flex flex-1">
+        <Sidebar role="admin" />
 
-        {/* Main Content */}
-        <main className="flex-1 p-8">
-          <header className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-bold">➕ Add New Team</h1>
+        <main className="flex-1 p-6 md:p-10 overflow-auto">
+          <header className="flex items-center mb-8 gap-3">
+            <UserPlus size={36} className="text-cyan-400" />
+            <h1 className="text-3xl md:text-4xl font-bold">Add New Team</h1>
           </header>
 
-          <div className="bg-gray-900 rounded-xl shadow-md border border-gray-800 p-6">
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="bg-gray-900 rounded-2xl shadow-lg border border-gray-800 p-6 md:p-8">
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {/* Team Info */}
               <input
                 type="text"
                 name="teamLeader"
                 placeholder="Team Leader"
                 value={team.teamLeader}
                 onChange={handleChange}
-                className="w-full p-2 border border-gray-700 rounded bg-gray-800 text-white"
+                className="w-full p-3 border border-gray-700 rounded bg-gray-800 text-white placeholder-gray-400"
                 required
               />
               <input
@@ -154,7 +117,7 @@ export default function AddTeamPage() {
                 placeholder="Team Name"
                 value={team.teamName}
                 onChange={handleChange}
-                className="w-full p-2 border border-gray-700 rounded bg-gray-800 text-white"
+                className="w-full p-3 border border-gray-700 rounded bg-gray-800 text-white placeholder-gray-400"
                 required
               />
               <input
@@ -163,7 +126,7 @@ export default function AddTeamPage() {
                 placeholder="Team Leader Email"
                 value={team.teamLeaderMail}
                 onChange={handleChange}
-                className="w-full p-2 border border-gray-700 rounded bg-gray-800 text-white"
+                className="w-full p-3 border border-gray-700 rounded bg-gray-800 text-white placeholder-gray-400"
                 required
               />
               <input
@@ -172,28 +135,32 @@ export default function AddTeamPage() {
                 placeholder="Password"
                 value={team.password}
                 onChange={handleChange}
-                className="w-full p-2 border border-gray-700 rounded bg-gray-800 text-white"
+                className="w-full p-3 border border-gray-700 rounded bg-gray-800 text-white placeholder-gray-400"
                 required
               />
 
-              <h2 className="text-lg font-semibold">👥 Team Members</h2>
+              {/* Members */}
+              <h2 className="flex items-center gap-2 text-lg font-semibold text-cyan-400">
+                <Users size={20} /> Team Members
+              </h2>
+
               {team.members.map((member, index) => (
-                <div key={index} className="flex gap-2 mb-2">
+                <div key={index} className="flex gap-2 items-center mb-2 flex-wrap">
                   <input
                     type="text"
                     placeholder={`Member ${index + 1} Username`}
                     value={member.userName}
                     onChange={(e) => handleMemberChange(index, e.target.value)}
-                    className="flex-1 p-2 border border-gray-700 rounded bg-gray-800 text-white"
+                    className="flex-1 p-2 border border-gray-700 rounded bg-gray-800 text-white placeholder-gray-400"
                     required
                   />
                   {team.members.length > 8 && (
                     <button
                       type="button"
                       onClick={() => removeMember(index)}
-                      className="px-2 py-1 bg-red-500 text-white rounded"
+                      className="flex items-center gap-1 px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded transition"
                     >
-                      -
+                      <Trash2 size={16} /> Remove
                     </button>
                   )}
                 </div>
@@ -203,17 +170,18 @@ export default function AddTeamPage() {
                 <button
                   type="button"
                   onClick={addMember}
-                  className="px-3 py-1 bg-blue-500 text-white rounded"
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition"
                 >
-                  + Add Member
+                  <PlusSquare size={16} /> Add Member
                 </button>
               )}
 
+              {/* Submit */}
               <button
                 type="submit"
-                className="w-full p-2 bg-green-600 text-white rounded font-bold"
+                className="w-full flex items-center justify-center gap-2 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded text-lg transition"
               >
-                ✅ Submit Team
+                <CheckCircle size={20} /> Submit Team
               </button>
             </form>
           </div>

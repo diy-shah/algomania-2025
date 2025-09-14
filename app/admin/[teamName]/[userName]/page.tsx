@@ -5,11 +5,11 @@ import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
-
+import Sidebar from "@/components/side-navbar";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://54.204.245.101:5000";
 
-// ✅ Define types
+// Types
 interface Submission {
   title: string;
   difficulty: "Easy" | "Medium" | "Hard";
@@ -22,14 +22,9 @@ interface Member {
   submissions: Submission[];
 }
 
-interface Params {
-  teamName: string;
-  userName: string;
-}
-
 export default function MemberProfilePage() {
   const router = useRouter();
-  const params = useParams(); // ✅ cast params
+  const params = useParams();
   const { teamName, userName } = params;
 
   const [memberData, setMemberData] = useState<Member | null>(null);
@@ -71,86 +66,84 @@ export default function MemberProfilePage() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen flex flex-col bg-gray-950 text-gray-100">
       <Navbar />
-      <div className="flex min-h-screen bg-gray-950 text-gray-100">
-        {/* Sidebar */}
-        <aside className="w-64 bg-gray-900 p-6 flex flex-col border-r border-gray-800">
-          <h2 className="text-xl font-bold mb-8">MyApp Admin</h2>
-          <nav className="flex flex-col gap-4">
-            <Button variant="ghost" className="justify-start" onClick={() => router.push("/admin")}>
-              📊 Dashboard
-            </Button>
-            <Button variant="ghost" className="justify-start" onClick={() => router.push("/admin/allTeams")}>
-              👥 All Teams
-            </Button>
-            <Button variant="ghost" className="justify-start" onClick={() => router.push("/admin/addTeams")}>
-              ➕ Add Team
-            </Button>
-            <Button variant="ghost" className="justify-start text-green-400" onClick={() => router.push(`/admin/${teamName}`)}>
-              🔙 Back to Team
-            </Button>
-            <Button variant="ghost" className="justify-start text-green-400" onClick={() => router.push("/admin/addnotes")}>
-              ➕ Add Notes
-            </Button>
-          </nav>
-        </aside>
+      <div className="flex flex-1">
+        <Sidebar role="admin" />
 
-        {/* Main Content */}
-        <main className="flex-1 p-8">
-          <h1 className="text-2xl font-bold mb-4">{userName} - LeetCode Profile</h1>
+        <main className="flex-1 p-6 md:p-10 overflow-auto">
+          {/* Header */}
+          <section className="mb-8">
+            <h1 className="text-5xl md:text-6xl font-extrabold font-mono uppercase bg-gradient-to-r from-cyan-400 via-emerald-400 to-lime-300 bg-clip-text drop-shadow-lg leading-tight">
+              👤 {userName} Profile
+            </h1>
+            <p className="mt-4 text-lg md:text-xl text-gray-300 tracking-wide">
+              LeetCode Submissions & Score
+            </p>
+          </section>
 
           {/* Date Range Selection */}
-          <div className="flex gap-4 mb-6">
-            <div>
-              <label className="block mb-1 text-sm">Start Date</label>
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <div className="flex-1 min-w-[150px]">
+              <label className="block mb-1 text-sm text-gray-400">Start Date</label>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="bg-gray-800 border border-gray-700 p-2 rounded-md text-gray-100"
+                className="w-full bg-gray-800 border border-gray-700 p-2 rounded-md text-gray-100"
               />
             </div>
-            <div>
-              <label className="block mb-1 text-sm">End Date</label>
+            <div className="flex-1 min-w-[150px]">
+              <label className="block mb-1 text-sm text-gray-400">End Date</label>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="bg-gray-800 border border-gray-700 p-2 rounded-md text-gray-100"
+                className="w-full bg-gray-800 border border-gray-700 p-2 rounded-md text-gray-100"
               />
             </div>
-            <div className="flex items-end">
-              <Button onClick={fetchMemberData}>Fetch Data</Button>
+            <div className="flex sm:items-end mt-2 sm:mt-0">
+              <Button
+                onClick={fetchMemberData}
+                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md"
+              >
+                Fetch Data
+              </Button>
             </div>
           </div>
 
+          {/* Loading & Error */}
           {loading && <div className="text-gray-100">Loading...</div>}
           {error && <div className="text-red-500 mb-4">{error}</div>}
+
+          {/* Member Data Table */}
           {!loading && memberData && (
             <>
-              <p className="mb-6 text-gray-300">
-                Total Score: <span className="font-bold">{memberData.score}</span>
+              <p className="mb-6 text-gray-300 text-lg">
+                Total Score: <span className="font-bold text-emerald-400">{memberData.score}</span>
               </p>
 
-              <div className="bg-gray-900 rounded-xl shadow-md border border-gray-800 overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead className="bg-gray-800 text-gray-300">
+              <div className="bg-gray-900/80 rounded-2xl shadow-lg border border-gray-800 overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[600px]">
+                  <thead className="bg-gray-800/90 text-gray-300 uppercase tracking-wide text-sm md:text-base">
                     <tr>
-                      <th className="px-4 py-2 border-b border-gray-700 w-12">#</th>
-                      <th className="px-4 py-2 border-b border-gray-700">Title</th>
-                      <th className="px-4 py-2 border-b border-gray-700">Difficulty</th>
-                      <th className="px-4 py-2 border-b border-gray-700">Solved At</th>
-                      <th className="px-4 py-2 border-b border-gray-700">Link</th>
+                      <th className="px-4 py-3 border-b border-gray-700 w-12">#</th>
+                      <th className="px-4 py-3 border-b border-gray-700">Title</th>
+                      <th className="px-4 py-3 border-b border-gray-700">Difficulty</th>
+                      <th className="px-4 py-3 border-b border-gray-700">Solved At</th>
+                      <th className="px-4 py-3 border-b border-gray-700">Link</th>
                     </tr>
                   </thead>
                   <tbody>
                     {memberData.submissions.map((sub, index) => (
-                      <tr key={index} className="hover:bg-gray-800/50">
-                        <td className="px-4 py-2 border-b border-gray-800">{index + 1}</td>
-                        <td className="px-4 py-2 border-b border-gray-800">{sub.title}</td>
+                      <tr
+                        key={index}
+                        className="hover:bg-gray-800/50 transition-colors cursor-pointer"
+                      >
+                        <td className="px-4 py-3 border-b border-gray-800">{index + 1}</td>
+                        <td className="px-4 py-3 border-b border-gray-800">{sub.title}</td>
                         <td
-                          className={`px-4 py-2 border-b border-gray-800 font-bold ${
+                          className={`px-4 py-3 border-b border-gray-800 font-bold ${
                             sub.difficulty === "Easy"
                               ? "text-green-400"
                               : sub.difficulty === "Medium"
@@ -160,13 +153,13 @@ export default function MemberProfilePage() {
                         >
                           {sub.difficulty}
                         </td>
-                        <td className="px-4 py-2 border-b border-gray-800">{sub.timestamp}</td>
-                        <td className="px-4 py-2 border-b border-gray-800">
+                        <td className="px-4 py-3 border-b border-gray-800">{sub.timestamp}</td>
+                        <td className="px-4 py-3 border-b border-gray-800">
                           <a
                             href={sub.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-500 hover:underline"
+                            className="text-blue-400 hover:underline"
                           >
                             View
                           </a>
