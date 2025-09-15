@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import Sidebar from "@/components/side-navbar";
 import { UserPlus, Users, Trash2, PlusSquare, CheckCircle } from "lucide-react";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://54.204.245.101:5000";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://3.211.30.133:5000";
 
 export default function AddTeamPage() {
   const router = useRouter();
