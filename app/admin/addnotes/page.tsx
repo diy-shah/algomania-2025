@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import Sidebar from "@/components/side-navbar";
 import { Megaphone, PlusSquare, Calendar, Trash2 } from "lucide-react";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://3.211.30.133:5000";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://algomania3.duckdns.org/api";
 
 interface Notice {
   _id: string;

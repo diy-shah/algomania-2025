@@ -5,7 +5,7 @@ import axios from "axios";
 import { Navbar } from "@/components/navbar";
 import Sidebar from "@/components/side-navbar";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://3.211.30.133:5000";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://algomania3.duckdns.org/api";
 
 export default function TeamMemberPage() {
   const router = useRouter();
